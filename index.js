@@ -1,7 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 
-morgan.token('body', function (req, res) { return JSON.stringify(req.body)})
+morgan.token('body', function (req, res) { return (JSON.stringify(req.body) !== "{}" ? JSON.stringify(req.body) : '' )})
 
 const app = express()
 
