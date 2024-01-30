@@ -89,7 +89,7 @@ app.post('/api/persons', (request, response) => {
   }
 
   phonebook = phonebook.concat(entry)
-  response.json(phonebook)
+  response.json(entry)
 })
 
 const PORT = process.env.PORT || 3001
