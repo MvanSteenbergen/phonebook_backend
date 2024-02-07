@@ -5,7 +5,7 @@ const cors = require('cors')
 const Entry = require('./models/entry')
 const connectDB = require('./models/connectDB')
 
-morgan.token('body', function (req, res) { return (JSON.stringify(req.body) !== "{}" ? JSON.stringify(req.body) : '' )})
+morgan.token('body', function (request) { return (JSON.stringify(request.body) !== '{}' ? JSON.stringify(request.body) : '' )})
 
 const app = express()
 
@@ -27,7 +27,7 @@ app.get('/info', (request, response, next) => {
     .then(phonebook => {
       response.send(`<p>The phonebook currently has ${phonebook.length} entries</p><br/>${time}`)
     })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -39,12 +39,12 @@ app.get('/api/persons/:id', (request, response, next) => {
         response.status(404).end()
       }
     })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Entry.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -54,10 +54,8 @@ app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
 
   Entry.findByIdAndUpdate(
-      request.params.id, 
-      { name, number }, 
-      { new: true, runValidators: true, context: 'query' }
-    )
+    request.params.id, { name, number }, { new: true, runValidators: true, context: 'query' }
+  )
     .then(updatedEntry => {
       response.json(updatedEntry)
     })
@@ -75,7 +73,7 @@ app.post('/api/persons', (request, response, next) => {
   entry.save().then(result => {
     response.json(result)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 
 })
 
@@ -97,7 +95,7 @@ const PORT = process.env.PORT
 
 connectDB.then(() => {
   app.listen(PORT, () => {
-    console.log(`Listening for requests.`)
+    console.log('Listening for requests.')
   })
 })
 
