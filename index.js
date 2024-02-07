@@ -3,6 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const Entry = require('./models/entry')
+const connectDB = require('./models/connectDB')
 
 morgan.token('body', function (req, res) { return (JSON.stringify(req.body) !== "{}" ? JSON.stringify(req.body) : '' )})
 
@@ -97,5 +98,11 @@ const errorHandler = (error, request, response, next) => {
 app.use(errorHandler)
 
 const PORT = process.env.PORT
-app.listen(PORT)
+
+connectDB.then(() => {
+  app.listen(PORT, () => {
+    console.log(`Listening for requests.`)
+  })
+})
+
 console.log(`Server running on port ${PORT}`)
