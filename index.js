@@ -14,8 +14,6 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 app.use(cors())
 app.use(express.static('dist'))
 
-var count = NaN
-
 app.get('/api/persons', (request, response) => {
   Entry.find({}).then(phonebook => {
     response.json(phonebook)
